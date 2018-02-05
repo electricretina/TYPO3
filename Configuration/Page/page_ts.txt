@@ -1,0 +1,131 @@
+#######################
+# change heading labels
+#######################
+TCEFORM.tt_content.header_layout.altLabels.1 = Page Titles
+TCEFORM.tt_content.header_layout.altLabels.2 = Section Titles
+TCEFORM.tt_content.header_layout.altLabels.3 = Sub-Section Titles
+TCEFORM.tt_content.header_layout.altLabels.4 = Small Titles
+TCEFORM.tt_content.header_layout.altLabels.5 = Smallest Titles
+TCEFORM.tt_content.header_layout.altLabels.6 = hide heading
+
+## Disable the image settings since we are responsive
+TCEFORM.tt_content {  
+    # Disable fields that specify/change image dimensions
+    #imagewidth.disabled = 1
+    #imageheight.disabled = 1
+    section_frame.disabled = 1
+
+    # Limit column selection
+    imagecols.keepItems = 1, 2, 3, 4
+    imagecols.types.textpic.keepItems = 1, 2,3
+}
+
+RTE.default{
+ #override the width and height
+ RTEHeightOverride = 600px
+ RTEWidthOverride = 900px
+  #hide some buttons from the users
+  showButtons = * 
+  hideButtons = emoticon,subscript,underline,superscript,spellcheck,strikethrough,lefttoright,righttoleft,textcolor,bgcolor,fontstyle,fontsize
+
+  keepButtonGroupTogether = 1
+  
+  #make the enter key create a new paragraph
+  disableEnterParagraphs = 0
+
+  #set the path to the custom CSS sheet 
+  contentCSS = EXT:fbcorillia/Resources/Public/Css/fbc_rte.css
+  
+  #use stylesheet
+  ignoreMainStyleOverride = 1
+  
+  proc{
+    #list allowed tags
+    allowTags = table, tbody, tr, th, td, h1, h2, h3, h4,h5,h6, div, p, br, span, ul, ol, li, pre, blockquote, strong,em, b, i, u, sub, sup, strike, a, link, img, nobr, hr,center, font, tt, q, cite, abbr, acronym
+    #tags denied
+    denyTags >          
+    #list all allowed classes
+    allowedClasses(
+    color-darkgrey,text-lightgrey,text-underline,color-blue,color-red,color-dark-red,color-white,color-black,color-green,color-dark-green,color-yellow,color-dark-yellow,text-white,color-blue,
+    align-left,align-right,align-center,align-justify,quote,pull-quote,
+    text-smaller,text-small,text-regular,text-large,text-larger,text-largest,text-huge,
+    table-border,table-default,tr_even,tr-heading,colwidth-25,colwidth-33,colwidth-50,
+    image-left,image-right,image-centre,flexible,
+    )
+    #modify the html cleaning of tags
+    
+    //entry html parser
+    entryHTMLparser_db = 1
+    entryHTMLparser_db{
+      #tags allowed
+      allowTags < RTE.default.proc.allowTags
+      
+     tags.li.allowedAttribs = class 
+     
+     noAttrib = b,i,u,strike,sub,sup,strong,em,quote,blockquote,cite,tt,br,center
+     
+     #allow IMG tags
+     tags.img >
+    }
+    //html parser
+    HTMLparser_db{
+      //strip attribs
+      noAttrib = br
+      
+      //xhtml compliance
+      xhtml_cleaning =1
+    }
+  
+    //exit html parser
+    exitHTMLparser_db = 1
+    exitHTMLparser_db{
+      //remap tags
+      tags.b.remap = strong
+      tags.i.remap = em
+      
+      //keep non-matched tags
+      keepNonMatchedTags = 1
+      
+      //htmlspecialchars
+      htmlSpecialChars = 0
+    }
+  }
+  #list classes for links
+  buttons.link.properties.class.allowedClasses = external-link,external-link-new-window,internal-link, internal-link-new-window, download, mail, color-darkgrey,text-lightgrey,text-underline,color-blue,color-red,color-dark-red,color-white,color-black,color-green,color-dark-green,color-yellow,color-dark-yellow,text-white,color-blue
+
+  #list class for paragraphs only
+  buttons.blockstyle.tags.div.allowedClasses(
+    quote,pull-quote,align-left,align-right,align-center,align-justify,text-underline,
+    color-darkgrey,color-lightgrey,color-blue,color-red,color-dark-red,color-white,color-black,color-green,color-dark-green,color-yellow,color-dark-yellow,
+    text-smaller,text-small,text-regular,text-large,text-larger,text-largest,text-huge,
+  )
+  
+  #list classes for characters only
+  buttons.textstyle.tags.span.allowedClasses = color-darkgrey,color-lightgrey,color-blue,color-red,color-dark-red,color-white,text-underline,color-black,color-green,bold-color-darkgrey,bold-color-lightgrey,color-green,color-dark-green,color-yellow,color-dark-yellow,
+  
+  #list classes for images
+  buttons.image.properties.class.allowedClasses = image-left,image-right,image-centre,flexible
+  buttons.image.options.magic.maxWidth = 1000
+  buttons.image.options.magic.maxHeight = 1000
+  buttons.image.options.plain.maxWdith = 1000
+  buttons.image.options.plain.maxHeight = 1000
+  
+  #list classes for tables
+  buttons.blockstyle.tags.table.allowedClasses = table-border,table-default
+  
+  #list classes for table cells
+  buttons.blockstyle.tags.td.allowedClasses = align-left,align-right,align-center,align-justify,colwidth-25,colwidth-33,colwidth-50
+  
+  #config specific to tables
+  disableAlignmentFieldsetInTableOperations = 1
+  disableSpacingFieldsetInTableOperations = 0
+}
+#set the default button order 
+RTE.default.toolbarOrder = blockstylelabel, blockstyle, space, textstylelabel, textstyle, bar, linebreak, fontstyle, space, fontsize, space, formatblock, bar, bold, italic, underline, bar, strikethrough, subscript, superscript, bar, lefttoright, righttoleft, bar, left, center, right, justifyfull, bar, orderedlist, unorderedlist, outdent, indent, bar, textcolor, bgcolor, textindicator, linebreak,bar, emoticon, insertcharacter, line, link, image, table, user, acronym, bar, findreplace, spellcheck, bar, chMode, inserttag, removeformat, bar, copy, cut, paste, bar, undo, redo, bar, showhelp, about, linebreak,  toggleborders, bar, tableproperties, bar, rowproperties, rowinsertabove, rowinsertunder, rowdelete, rowsplit, bar, columninsertbefore, columninsertafter, columndelete, columnsplit, bar, cellproperties, cellinsertbefore, cellinsertafter, celldelete, cellsplit, cellmerge
+
+TCEMAIN.permissions{
+ groupid = 1
+ group = show,editcontent,edit,delete,new
+ user = show,editcontent,edit,delete,new
+ everybody = show,editcontent
+}
